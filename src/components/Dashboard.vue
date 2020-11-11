@@ -22,6 +22,7 @@
 
     <div class="text-center">
       <v-btn
+        v-if="!paginationVersion"
         class="show-pagination-button"
         v-on:click="showPaginationVerion()"
         elevation="1"
