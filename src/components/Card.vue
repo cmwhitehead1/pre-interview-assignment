@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container grid">
 
     <div class="card"
       v-for="(card, index) of cardList" :key="index">
@@ -50,12 +50,10 @@ export default {
     height: 100px;
   }
 
-  .container {
+  .grid {
     display: grid;
-    justify-content: center;
     grid-template-columns: repeat(2, $card-width);
     grid-gap: 13px;
-    color: #444;
 
     @media (min-width: 480px) {
       grid-template-columns: repeat(3, $card-width);
@@ -65,8 +63,13 @@ export default {
     @media (min-width: 780px) {
       grid-template-columns: repeat(5, $card-width);
     }
-
   }
+
+  .container {
+    justify-content: center;
+    color: #444;
+  }
+
   .card {
     display: flex;
     flex-direction: column;
