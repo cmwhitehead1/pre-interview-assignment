@@ -20,7 +20,18 @@
       >Sub Heading A to Z</v-btn>
     </div>
 
-    <Card :cardList="cardList" />
+    <!-- <div class="text-center">
+      <v-pagination
+        v-model="currentPage"
+        :length="6"
+        @input="handlePageChange"
+      ></v-pagination>
+    </div> -->
+
+    <div class="cards">
+      <Card :cardList="cardList" />
+    </div>
+
   </div>
 </template>
 
@@ -36,9 +47,13 @@ export default {
   data() {
     return {
       cardList: CardData,
+      currentPage: 1,
     };
   },
   methods: {
+    // handlePageChange(value) {
+    //   this.currentPage = value;
+    // },
     sortTypeChange(sortType) {
       console.log(sortType);
       switch (sortType) {

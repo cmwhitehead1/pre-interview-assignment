@@ -5,8 +5,8 @@
       v-for="(card, index) of cardList" :key="index">
 
      <div class="image-container">
-         <img v-if="card.Image == ''" alt="Vue logo" src="@/assets/imagePlaceholder.png">
-         <img v-if="card.Image == 'image1'" alt="Vue logo" src="@/assets/image1.png">
+         <img v-if="card.Image == ''" alt="Vue logo" src="@/assets/imagePlaceholder.jpg">
+         <img v-if="card.Image == 'image1'" alt="Vue logo" src="@/assets/image1.jpg">
      </div>
 
      <div class="content">
@@ -53,17 +53,17 @@ export default {
   .container {
     display: grid;
     justify-content: center;
-    grid-template-columns: $card-width $card-width;
+    grid-template-columns: repeat(2, $card-width);
     grid-gap: 13px;
     color: #444;
 
     @media (min-width: 480px) {
-      grid-template-columns: $card-width $card-width $card-width;
+      grid-template-columns: repeat(3, $card-width);
       grid-template-rows: 1.3fr 1.5fr 1.3fr;
     }
 
     @media (min-width: 780px) {
-      grid-template-columns: $card-width $card-width $card-width $card-width $card-width;
+      grid-template-columns: repeat(5, $card-width);
     }
 
   }
