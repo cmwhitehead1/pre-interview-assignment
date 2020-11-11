@@ -2,4 +2,4 @@
 
 The purpose of this assignment is to get a technical work sample.
 
-The stack being used is Vue.js and Node.js. Styles will be done in SCSS.
+The stack being used is Vue.js. Styles will be done in SCSS.
