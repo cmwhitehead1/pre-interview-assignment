@@ -85,7 +85,8 @@ export default {
       }
     },
     headingSort(headingType) {
-      const sorted = this.flatten(this.cardList).sort((a, b) => {
+      const arr = this.paginationVersion ? this.flatten(this.cardList) : this.currentList;
+      const sorted = arr.sort((a, b) => {
         if (headingType === 'headingAtoZ') {
           if (a.Heading < b.Heading) { return -1; }
           if (a.Heading > b.Heading) { return 1; }
@@ -96,9 +97,13 @@ export default {
         return 0;
       });
 
-      const multi = this.spliceArray(sorted);
-      this.cardList = multi;
-      this.currentList = multi[this.currentPage - 1];
+      if (this.paginationVersion) {
+        const multi = this.spliceArray(sorted);
+        this.cardList = multi;
+        this.currentList = multi[this.currentPage - 1];
+      } else {
+        this.currentList = arr;
+      }
     },
     priceSort(sortType) {
       if (this.paginationVersion) {
