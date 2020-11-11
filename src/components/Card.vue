@@ -28,9 +28,6 @@ export default {
   props: {
     cardList: Array,
   },
-  mounted() {
-    console.dir(this.cardList);
-  },
 };
 </script>
 
