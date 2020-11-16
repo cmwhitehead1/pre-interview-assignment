@@ -10,12 +10,12 @@
      </div>
 
      <div class="content">
-      <h3 class="text heading"> {{card.Heading}} </h3>
-      <div class="text subHeading"> {{card.Subheading}} </div>
+      <h3 class="text heading"> {{ card.Heading }} </h3>
+      <div class="text subHeading"> {{ card.Subheading }} </div>
      </div>
 
       <div class="price">
-        <div class="text"> {{card.Price | currency}} </div>
+        <div class="text"> {{ card.Price | currency }} </div>
       </div>
 
     </div>
@@ -24,10 +24,8 @@
 
 <script>
 export default {
-  name: 'Card',
-  props: {
-    cardList: Array,
-  },
+  name: 'card-grid',
+  props: { cardList: Array },
 };
 </script>
 
@@ -37,14 +35,10 @@ export default {
   $card-width: 135px;
   $borderRadius: 10px;
 
-  .image-container {
-    border-top-left-radius: $borderRadius;
-    border-top-right-radius: $borderRadius;
-    overflow: hidden;
-  }
-  img {
-    width: 100%;
-    height: 100px;
+  .container {
+    justify-content: center;
+    color: #444;
+    padding: 25px;
   }
 
   .grid {
@@ -54,7 +48,7 @@ export default {
 
     @media (min-width: 480px) {
       grid-template-columns: repeat(3, $card-width);
-      grid-template-rows: 1.3fr 1.5fr 1.3fr;
+      grid-template-rows: repeat(3, 1.5fr);
     }
 
     @media (min-width: 780px) {
@@ -62,9 +56,14 @@ export default {
     }
   }
 
-  .container {
-    justify-content: center;
-    color: #444;
+  .image-container {
+    border-top-left-radius: $borderRadius;
+    border-top-right-radius: $borderRadius;
+    overflow: hidden;
+  }
+  img {
+    width: 100%;
+    height: 100px;
   }
 
   .card {

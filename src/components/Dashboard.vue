@@ -2,72 +2,72 @@
   <div class="dashboard">
      <div class="sorting-buttons">
       <v-btn
-        v-on:click="sortTypeChange('priceAscending')"
+        v-on:click="changeSortType('priceAscending')"
         elevation="1"
       >Price Low to High</v-btn>
       <v-btn
-        v-on:click="sortTypeChange('priceDescending')"
+        v-on:click="changeSortType('priceDescending')"
         elevation="1"
       >Price High to Low</v-btn>
       <v-btn
-        v-on:click="sortTypeChange('headingSortAZ')"
+        v-on:click="changeSortType('headingSortAZ')"
         elevation="1"
       >Heading A to Z</v-btn>
 
       <v-btn
-        v-on:click="sortTypeChange('subHeadingSortAZ')"
+        v-on:click="changeSortType('subHeadingSortAZ')"
         elevation="1"
       >Sub Heading A to Z</v-btn>
     </div>
 
-    <div class="text-center">
-      <v-btn
-        v-if="!paginationVersion"
-        class="show-pagination-button"
-        v-on:click="showPaginationVerion()"
-        elevation="1"
-      >Show Pagination Version</v-btn>
-      <v-pagination
-        v-if="paginationVersion"
-        v-model="currentPage"
-        :length="numberOfPages"
-        @input="handlePageChange"
-      ></v-pagination>
-    </div>
+    <v-pagination
+      v-model="currentPage"
+      :length="numberOfPages"
+      @input="handlePageChange"
+    ></v-pagination>
 
-    <div class="cards">
-      <Card :cardList="currentList" />
-    </div>
+    <card-grid :cardList="currentCardList"/>
 
+    <v-pagination
+      v-model="currentPage"
+      :length="numberOfPages"
+      @input="handlePageChange"
+    ></v-pagination>
   </div>
 </template>
 
 <script>
-import Card from '@/components/Card.vue';
+import cardGrid from '@/components/Card.vue';
+import arrayUtils from '@/utils/array';
 import CardData from '../services/cardData.json';
 
 export default {
   name: 'Dashboard',
   components: {
-    Card,
+    cardGrid,
   },
   data() {
     return {
       numberOfPages: 0,
-      cardList: [],
-      currentList: [],
       prevPage: 0,
+      cardsPerPage: 20,
+      cardList: [],
+      currentCardList: [],
       currentPage: 1,
-      paginationVersion: false,
     };
   },
   methods: {
+    buildCardList(sorted) {
+      const multi = arrayUtils.spliceArray(sorted, this.cardsPerPage);
+      this.cardList = multi;
+      this.currentCardList = multi[this.currentPage - 1];
+    },
     handlePageChange(value) {
-      this.currentList = this.cardList[this.currentPage - 1];
+      this.currentCardList = this.cardList[this.currentPage - 1];
       this.prevPage = value;
       this.currentPage = value;
     },
-    sortTypeChange(sortType) {
+    changeSortType(sortType) {
       switch (sortType) {
         case 'priceAscending':
           this.priceSort('ascending');
@@ -85,73 +85,48 @@ export default {
           break;
       }
     },
-    headingSort(headingType) {
-      const arr = this.paginationVersion ? this.flatten(this.cardList) : this.currentList;
-      const sorted = arr.sort((a, b) => {
-        if (headingType === 'headingAtoZ') {
-          if (a.Heading < b.Heading) { return -1; }
-          if (a.Heading > b.Heading) { return 1; }
-        } else if (headingType === 'subHeadingAtoZ') {
-          if (a.Subheading < b.Subheading) { return -1; }
-          if (a.Subheading > b.Subheading) { return 1; }
-        }
-        return 0;
-      });
+    headingSort(sortType) {
+      const sortedCards = arrayUtils
+        .flatten(this.cardList)
+        .sort((a, b) => {
+          if (sortType === 'headingAtoZ') {
+            if (a.Heading < b.Heading) { return -1; }
+            if (a.Heading > b.Heading) { return 1; }
+          } else if (sortType === 'subHeadingAtoZ') {
+            if (a.Subheading < b.Subheading) { return -1; }
+            if (a.Subheading > b.Subheading) { return 1; }
+          }
+          return 0;
+        });
 
-      if (this.paginationVersion) {
-        const multi = this.spliceArray(sorted);
-        this.cardList = multi;
-        this.currentList = multi[this.currentPage - 1];
-      } else {
-        this.currentList = arr;
-      }
+      this.buildCardList(sortedCards);
     },
     priceSort(sortType) {
-      if (this.paginationVersion) {
-        let sorted;
-        if (sortType === 'ascending') {
-          sorted = this.flatten(this.cardList).sort((a, b) => a.Price - b.Price);
-        } else if (sortType === 'descending') {
-          sorted = this.flatten(this.cardList).sort((a, b) => b.Price - a.Price);
-        }
-        const multi = this.spliceArray(sorted);
-        this.cardList = multi;
-        this.currentList = multi[this.currentPage - 1];
-      } else if (sortType === 'ascending') {
-        this.currentList = this.currentList.sort((a, b) => a.Price - b.Price);
+      let sortedCards;
+      if (sortType === 'ascending') {
+        sortedCards = arrayUtils
+          .flatten(this.cardList)
+          .sort((a, b) => a.Price - b.Price);
       } else if (sortType === 'descending') {
-        this.currentList = this.currentList.sort((a, b) => b.Price - a.Price);
+        sortedCards = arrayUtils
+          .flatten(this.cardList)
+          .sort((a, b) => b.Price - a.Price);
       }
-    },
-    flatten(arr) {
-      const flattened = arr.reduce((acc, curVal) => acc.concat(curVal), []);
-      return flattened;
-    },
-    spliceArray(arr) {
-      const newArr = [];
 
-      while (arr.length) {
-        newArr.push(arr.splice(0, 5));
-      }
-      return newArr;
+      this.buildCardList(sortedCards);
     },
     initCards(cards) {
-      this.currentList = cards;
-    },
-    initPagination() {
-      const newArr = this.spliceArray(CardData);
-      this.numberOfPages = newArr.length;
-      this.cardList = newArr;
-      this.currentList = newArr[this.currentPage - 1];
-      this.initCards(this.currentList);
-    },
-    showPaginationVerion() {
-      this.paginationVersion = !this.paginationVersion;
-      this.initPagination();
+      this.currentCardList = cards;
     },
   },
   beforeMount() {
-    this.initCards(CardData);
+    // Splice the Array based on how many cards per page.
+    const splicedArray = arrayUtils.spliceArray(CardData, this.cardsPerPage);
+
+    this.numberOfPages = splicedArray.length;
+    this.cardList = splicedArray;
+    this.currentCardList = splicedArray[this.currentPage - 1];
+    this.initCards(this.currentCardList);
   },
 };
 </script>
@@ -159,7 +134,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .dashboard {
-  padding-top: 65px;
   background-color: #9bc6e2;
   height: 100%;
 }
@@ -186,7 +160,7 @@ export default {
     grid-template-columns: auto auto;
   }
 
-    @media (min-width: 845px) {
+  @media (min-width: 845px) {
     grid-template-columns: auto auto auto auto;
   }
 }

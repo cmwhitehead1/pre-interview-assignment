@@ -2,7 +2,9 @@
   <div id="app">
     <v-app>
       <Header />
-      <Dashboard />
+      <SingleColumnLayout>
+        <Dashboard />
+      </SingleColumnLayout>
     </v-app>
   </div>
 </template>
@@ -11,12 +13,14 @@
 
 import Dashboard from './components/Dashboard.vue';
 import Header from './components/Header.vue';
+import SingleColumnLayout from './layouts/SingleColumn.vue';
 
 export default {
   name: 'App',
   components: {
-    Dashboard,
     Header,
+    SingleColumnLayout,
+    Dashboard,
   },
 };
 </script>

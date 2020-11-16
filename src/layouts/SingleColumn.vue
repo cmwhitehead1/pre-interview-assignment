@@ -7,7 +7,7 @@
           outlined
           tile
         >
-          (Single Column Layout) Main Content
+          <slot>(Single Column Layout)</slot>
         </v-card>
       </v-col>
     </v-row>
@@ -22,5 +22,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.single-column {
+  margin-top: 65px;
+}
 
+.v-card {
+  background-color: #9bc6e2 !important;
+}
 </style>
